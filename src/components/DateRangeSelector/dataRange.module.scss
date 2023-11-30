@@ -1,0 +1,23 @@
+.rangeWrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    margin-bottom: 1%;
+    justify-content: flex-end;
+}
+
+.filterBtn {
+    border: 1px solid #e8eff9;
+    background-color: #ffffff;
+    margin-left: 1.2%;
+    display: flex;
+    padding: .8%;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    width: 8%;
+    div{
+        margin-right: 2%;
+    }
+}
