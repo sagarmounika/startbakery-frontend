@@ -5,8 +5,6 @@
   "dependencies": {
     "@canvasjs/charts": "^3.7.29",
     "@canvasjs/react-charts": "^1.0.0",
-    "@canvasjs/react-stockcharts": "^1.0.0",
-    "@canvasjs/stockcharts": "^1.7.29",
     "@reduxjs/toolkit": "^1.9.7",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

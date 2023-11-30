@@ -22,7 +22,7 @@ CanvasJS.addColorSet("customColorSet1", [
   "#e6d9ffff",
   "#ffe9d3ff",
 ])
-const ChartWrapper = () => {
+const ChartWrapper = ({scrollToTop}) => {
   const dispatch = useDispatch()
   const {ordersData, timeFilteredData} = useSelector(
     state => state.dashboardReducer
@@ -31,19 +31,22 @@ const ChartWrapper = () => {
   const handleTypeSelect = e => {
     const type = e.dataPoint.label
     dispatch(setSelectedType(type))
+    scrollToTop()
   }
 
   const handleStateSelect = e => {
     const type = e.dataPoint.label
     dispatch(setSelectedState(type))
+    scrollToTop()
   }
 
   const handleRegionSelect = e => {
     const type = e.dataPoint.label2
 
     dispatch(setSelectedRegion(Number(type)))
+    scrollToTop()
   }
-  console.log(ordersData, "ordersData")
+
   const typeChartData = groupOrders(
     timeFilteredData,
     "itemType",
@@ -58,6 +61,9 @@ const ChartWrapper = () => {
       padding: 5,
       fontWeight: "lighter",
       fontFamily: "Roboto",
+    },
+    toolTip: {
+      fontColor: "black",
     },
     axisX: {
       title: "Type",
@@ -97,6 +103,9 @@ const ChartWrapper = () => {
       fontWeight: "lighter",
       fontFamily: "Roboto",
     },
+    toolTip: {
+      fontColor: "black",
+    },
     axisX: {
       title: "State",
       labelFontColor: "#9a9ea2",
@@ -118,7 +127,7 @@ const ChartWrapper = () => {
       },
     ],
   }
-  console.log(timeFilteredData, "timeFilteredData")
+
   const topBranchesChartData = groupOrders(
     timeFilteredData,
     "branch",
@@ -127,6 +136,9 @@ const ChartWrapper = () => {
   const topBranchesChartOptions = {
     animationEnabled: true,
     colorSet: "customColorSet1",
+    toolTip: {
+      fontColor: "black",
+    },
     title: {
       text: "Top 5 Branches",
       fontSize: 20,
@@ -162,7 +174,10 @@ const ChartWrapper = () => {
   ]
   return (
     <div className={style.chartWrapper}>
-      <ReactGridLayout
+      {charts.map((chart, index) => (
+        <CanvasJSChart options={chart.options} key={index} />
+      ))}
+      {/* <ReactGridLayout
         className="nested-layout"
         cols={3}
         rowHeight={150}
@@ -176,7 +191,7 @@ const ChartWrapper = () => {
             <CanvasJSChart options={chart.options} />
           </div>
         ))}
-      </ReactGridLayout>
+      </ReactGridLayout> */}
     </div>
   )
 }

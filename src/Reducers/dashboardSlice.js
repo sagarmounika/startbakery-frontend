@@ -14,7 +14,7 @@ export const getOrdersData = createAsyncThunk(
           Accept: "application/json",
         },
       })
-      console.log(response.data)
+     
       onSuccess()
       let updated = response.data.map(order => ({
         ...order,
@@ -99,7 +99,7 @@ const dashboardSlice = createSlice({
         state.error = null
       })
       .addCase(getOrdersData.fulfilled, (state, action) => {
-        console.log(action.payload, "action.payload")
+       
         state.loading = false
         state.ordersData = action.payload
       })

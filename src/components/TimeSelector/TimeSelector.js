@@ -29,7 +29,7 @@ const TimeSelector = () => {
   const {selectedTimeRange} = useSelector(state => state.dashboardReducer)
 
   const handleTimeRangeChange = selectedOption => {
-    console.log(selectedOption)
+    
     dispatch(setSelectedTimeRange(selectedOption.value))
     dispatch(clearDates())
   }

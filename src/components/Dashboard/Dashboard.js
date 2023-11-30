@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useLayoutEffect} from "react"
+import React, {useRef, useEffect, useLayoutEffect, forwardRef} from "react"
 import TimeSelector from "../TimeSelector/TimeSelector"
 import DateRangeSelector from "../DateRangeSelector/DateRangeSelector"
 import ChartWrapper from "../ChartWrapper/ChartWrapper"
@@ -30,8 +30,7 @@ const Dashboard = () => {
     endDate,
     loading,
   } = useSelector(state => state.dashboardReducer)
-  const [timeSeriesHeight, setTimeSeriesHeight] = useState(400)
-
+  const scrollRef = useRef(null)
   const {groupedData} = useSelector(state => state.dashboardReducer.groupData)
   useEffect(() => {
     dispatch(getOrdersData({onSuccess: () => {}, onFailure: () => {}}))
@@ -42,8 +41,7 @@ const Dashboard = () => {
         moment().subtract(1, selectedTimeRange).startOf(selectedTimeRange)
       )
     )
-    console.log(ordersData, selectedTimeRange)
-    // // Filter by date if startDate and endDate are defined
+   
     if (startDate && endDate) {
       filteredByTime = filteredByTime.filter(order =>
         moment(order.lastUpdateTime).isBetween(startDate, endDate, null, "[]")
@@ -54,7 +52,7 @@ const Dashboard = () => {
   }, [selectedTimeRange, ordersData, startDate, endDate])
 
   useEffect(() => {
-    console.log(timeFilteredData, "are u timeFilteredData")
+   
     if (timeFilteredData.length > 0) {
       const {groupedData, groupedTotalValueData} = groupOrdersByTimeGranularity(
         timeFilteredData,
@@ -64,7 +62,7 @@ const Dashboard = () => {
         selectedRegion
       )
       dispatch(setGroupData({groupedData, groupedTotalValueData}))
-      console.log(groupedData, "groupedData")
+     
     } else {
       dispatch(setGroupData({groupedData: [], groupedTotalValueData: []}))
     }
@@ -73,32 +71,15 @@ const Dashboard = () => {
   const clearHandler = () => {
     dispatch(clearAll())
   }
-  useLayoutEffect(() => {
-    // Function to calculate the height of TimeSeriesChart
-    const calculateTimeSeriesHeight = () => {
-      const timeSeriesElement = document.getElementById("timeseries-chart")
-      console.log(timeSeriesElement, "timeSeriesElement")
-      if (timeSeriesElement) {
-        const rect = timeSeriesElement.getBoundingClientRect()
-        const height = rect.height
-        console.log(height, "height")
-        setTimeSeriesHeight(height)
-      }
-    }
-
-    // Call the function on mount and after each render
-    calculateTimeSeriesHeight()
-    window.addEventListener("resize", calculateTimeSeriesHeight)
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", calculateTimeSeriesHeight)
-    }
-  }, [groupedData])
+  const scrollToTop = () => {
+    scrollRef.current?.scrollIntoView({behavior: "smooth"})
+  }
   return (
     <div className={style.dashboardContainer}>
       {loading ? (
-        "loading"
+        <div className={style.laodingContainer}>
+          <img src="./loading.gif" alt="Logo" />
+        </div>
       ) : (
         <>
           <div className={style.dashboardHeader}>
@@ -121,7 +102,7 @@ const Dashboard = () => {
           </div>
           {groupedData.length ? (
             <>
-              <DateRangeSelector />
+              <DateRangeSelector ref={scrollRef} />
               {/* <ReactGridLayout
                 className={style.layout}
                 cols={3}
@@ -137,14 +118,14 @@ const Dashboard = () => {
                 />
               </ReactGridLayout> */}
               <TimeSeriesChart />
-              <ChartWrapper />
+              <ChartWrapper scrollToTop={scrollToTop} />
             </>
           ) : (
             "No data available"
           )}
         </>
       )}
-
+      {/* <Dummy /> */}
       {/* <div className={style.chartContainer}>
 
       <TimeSeriesChart />

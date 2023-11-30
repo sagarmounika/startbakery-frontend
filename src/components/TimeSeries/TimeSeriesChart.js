@@ -1,5 +1,5 @@
 // TimeSeriesChart.js
-import React, {useState, useRef} from "react"
+import React, {useState, useRef, useEffect, useCallback} from "react"
 import CanvasJSReact from "@canvasjs/react-charts"
 import {useDispatch, useSelector} from "react-redux"
 import {customStyles} from "../../features/dashboard/selectUtils"
@@ -12,10 +12,10 @@ const options = [
   {value: "no", label: "No of Orders"},
   {value: "total", label: "Total Value Of Orders"},
 ]
+
 const TimeSeriesChart = () => {
   const chartRef = useRef(null)
-  const dataPointCounterRef = useRef(0)
-
+  const containerRef = useRef(null)
   const {groupedData, groupedTotalValueData} = useSelector(
     state => state.dashboardReducer.groupData
   )
@@ -64,16 +64,23 @@ const TimeSeriesChart = () => {
 
   const canvasJSOptions = {
     zoomEnabled: true,
-    zoomType: "xy",
+
     // exportEnabled: true,
     animationEnabled: true,
-    // title: {
-    //   text: "Order Data",
-    //   fontSize: 25,
-    //   padding: 5,
-    //   fontWeight: "lighter",
-    //   fontFamily: "Roboto",
-    // },
+    animationDuration: 2000,
+    toolTip: {
+      fontColor: "black",
+    },
+    rangeChanged: function (e) {
+      
+      if (e.trigger === "reset") {
+        e.chart.options.axisX.viewportMinimum = null
+        e.chart.options.axisX.viewportMaximum = null
+        e.chart.axisX[0].viewportMinimum = null
+        e.chart.axisX[0].viewportMaximum = null
+        e.chart.render()
+      }
+    },
     axisX: {
       title: "Time",
       labelFontColor: "#9a9ea2",
@@ -101,18 +108,36 @@ const TimeSeriesChart = () => {
     data: canvasJSData,
   }
 
-  const wheelHandler = e => {
-    zoomHandler(e, chartRef, dataPointCounterRef)
-  }
-
   const onSelect = val => {
     setType(val)
   }
+  const onWheel = useCallback(e => {
+    e.preventDefault()
+    const chart = chartRef.current
+    const container = containerRef.current
+    const {x1, x2, y1, y2} = chart?.plotArea
+   
+
+    container.scrollTo({bottom: container.scrollHeight, behavior: "smooth"})
+    zoomHandler(chart, e)
+    //  container.scrollTop += e.deltaY
+  }, [])
+  const divRefCallback = useCallback(
+    node => {
+   
+      if (node == null) {
+        return
+      }
+      containerRef.current = node
+      node.addEventListener("wheel", onWheel, {passive: false})
+    },
+    [onWheel]
+  )
   return (
     <div
-      onWheel={wheelHandler}
       className={style.timeChartContainer}
       id="timeseries-chart"
+      ref={divRefCallback}
     >
       <div className={style.header}>
         <div className={style.title}>Order Data</div>
@@ -126,10 +151,17 @@ const TimeSeriesChart = () => {
           />
         </div>
       </div>
-      <CanvasJSChart
-        options={canvasJSOptions}
-        onRef={ref => (chartRef.current = ref)}
-      />
+      {/* <div onWheel={e => wheelHandler(e)}> */}
+      <div className={style.chartContainer} ref={divRefCallback}>
+        <CanvasJSChart
+          options={canvasJSOptions}
+          onRef={ref => (chartRef.current = ref)}
+          id="chart"
+          // ref={containerRef}
+        />
+      </div>
+
+      {/* </div> */}
     </div>
   )
 }

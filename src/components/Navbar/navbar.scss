@@ -1,0 +1,22 @@
+.navbar {
+    position: relative;
+    z-index: 999;
+    height: 10vh;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+.sticky-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.logo {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 1%;
+    font-weight: 500;
+    color: #1d7857;
+}

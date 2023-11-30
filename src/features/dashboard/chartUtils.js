@@ -25,56 +25,76 @@ export const groupOrders = (orders, propertyKey, onClickHandler) => {
   }))
 }
 
-export const zoomHandler = (e, chartRef, dataPointCounterRef) => {
-  e.preventDefault()
-
+export const zoomHandler = (chart,e) => {
   if (
-    e.clientX < chartRef.current.plotArea.x1 ||
-    e.clientX > chartRef.current.plotArea.x2 ||
-    e.clientY < chartRef.current.plotArea.y1 ||
-    e.clientY > chartRef.current.plotArea.y2
+    e.clientX < chart.plotArea.x1 ||
+    e.clientX > chart.plotArea.x2 ||
+    e.clientY < chart.plotArea.y1 ||
+    e.clientY > chart.plotArea.y2
   )
     return
 
-  var axisX = chartRef.current.axisX[0]
-  var viewportMin = axisX.get("viewportMinimum"),
-    viewportMax = axisX.get("viewportMaximum"),
-    interval = axisX.get("minimum")
+  var xValue = Math.round(chart.axisX[0].convertPixelToValue(e.clientX))
+  var yValue = Math.round(chart.axisY[0].convertPixelToValue(e.clientY))
 
-  var newViewportMin, newViewportMax
+  var axisXViewportMin = chart.axisX[0].get("viewportMinimum"),
+    axisXViewportMax = chart.axisX[0].get("viewportMaximum"),
+    axisYViewportMin = chart.axisY[0].get("viewportMinimum"),
+    axisYViewportMax = chart.axisY[0].get("viewportMaximum"),
+    axisXMin = chart.axisX[0].get("minimum"),
+    axisXMax = chart.axisX[0].get("maximum"),
+    axisYMin = chart.axisY[0].get("minimum"),
+    axisYMax = chart.axisY[0].get("maximum"),
+    axisXInterval = chart.axisX[0].interval,
+    axisYInterval = chart.axisY[0].interval
+
+  var newAxisXViewportMin,
+    newAxisXViewportMax,
+    newAxisYViewportMin,
+    newAxisYViewportMax
 
   if (e.deltaY < 0) {
-    newViewportMin = viewportMin + interval
-    newViewportMax = viewportMax - interval
+    newAxisXViewportMin =
+      axisXViewportMin + (xValue - axisXViewportMin) / axisXInterval
+    newAxisXViewportMax =
+      axisXViewportMax - (axisXViewportMax - xValue) / axisXInterval
+
+    newAxisYViewportMin =
+      axisYViewportMin + (yValue - axisYViewportMin) / axisYInterval
+    newAxisYViewportMax =
+      axisYViewportMax - (axisYViewportMax - yValue) / axisYInterval
   } else if (e.deltaY > 0) {
-    newViewportMin = viewportMin - interval
-    newViewportMax = viewportMax + interval
+    newAxisXViewportMin =
+      axisXViewportMin - (xValue - axisXViewportMin) / axisXInterval >= axisXMin
+        ? axisXViewportMin - (xValue - axisXViewportMin) / axisXInterval
+        : axisXMin
+    newAxisXViewportMax =
+      axisXViewportMax + (axisXViewportMax - xValue) / axisXInterval <= axisXMax
+        ? axisXViewportMax + (axisXViewportMax - xValue) / axisXInterval
+        : axisXMax
+
+    newAxisYViewportMin =
+      axisYViewportMin - (yValue - axisYViewportMin) / axisYInterval >= axisYMin
+        ? axisYViewportMin - (yValue - axisYViewportMin) / axisYInterval
+        : axisYMin
+    newAxisYViewportMax =
+      axisYViewportMax + (axisYViewportMax - yValue) / axisYInterval <= axisYMax
+        ? axisYViewportMax + (axisYViewportMax - yValue) / axisYInterval
+        : axisYMax
   }
 
-  if (newViewportMin < chartRef.current.axisX[0].get("minimum"))
-    newViewportMin = chartRef.current.axisX[0].get("minimum")
+  if (
+    newAxisXViewportMin >= axisXMin &&
+    newAxisXViewportMax <= axisXMax &&
+    newAxisXViewportMax - newAxisXViewportMin > 2 * axisXInterval &&
+    newAxisYViewportMin >= axisYMin &&
+    newAxisYViewportMax <= axisYMax &&
+    newAxisYViewportMax - newAxisYViewportMin > 2 * axisYInterval
+  ) {
+    chart.axisX[0].set("viewportMinimum", newAxisXViewportMin, false)
+    chart.axisX[0].set("viewportMaximum", newAxisXViewportMax, false)
 
-  if (newViewportMax > chartRef.current.axisX[0].get("maximum"))
-    newViewportMax = chartRef.current.axisX[0].get("maximum")
-
-  if (newViewportMax - newViewportMin > 2 * interval) {
-    dataPointCounterRef.current = 0
-    for (
-      var i = 0;
-      i < chartRef.current.options.data[0].dataPoints.length;
-      i++
-    ) {
-      if (
-        chartRef.current.options.data[0].dataPoints[i].x > newViewportMin &&
-        chartRef.current.options.data[0].dataPoints[i].x < newViewportMax
-      ) {
-        dataPointCounterRef.current++
-      }
-    }
-
-    if (dataPointCounterRef.current > 2) {
-      chartRef.current.axisX[0].set("viewportMinimum", newViewportMin, false)
-      chartRef.current.axisX[0].set("viewportMaximum", newViewportMax)
-    }
+    chart.axisY[0].set("viewportMinimum", newAxisYViewportMin, false)
+    chart.axisY[0].set("viewportMaximum", newAxisYViewportMax)
   }
 }

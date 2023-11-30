@@ -1,25 +1,28 @@
-// Navbar.js
-// import {Box, Flex, Spacer, Image, Button} from "@chakra-ui/react"
-import {Link} from "react-router-dom"
-import {useNavigate} from "react-router-dom"
-const Navbar = () => {
-  const navigate = useNavigate()
-  const handleLogout = () => {
-    localStorage.clear()
-    navigate("/")
-  }
+import style from "./navbar.scss"
+import React, {useState, useEffect} from "react"
 
+const Navbar = () => {
+ const [stickyClass, setStickyClass] = useState("")
+
+ useEffect(() => {
+   window.addEventListener("scroll", stickNavbar)
+   return () => window.removeEventListener("scroll", stickNavbar)
+ }, [])
+
+ const stickNavbar = () => {
+   if (window !== undefined) {
+     let windowHeight = window.scrollY
+     // window height changed for the demo
+     windowHeight > 150 ? setStickyClass("sticky-nav") : setStickyClass("")
+   }
+ }
   return (
-    <div
-      align="center"
-      justifyContent="space-around"
-      bg="white"
-      color="teal.500"
-      boxShadow="md"
-    >
-      <div display="flex" alignItems="center">
-        <img src="./images/logo.png" alt="Logo" height="100px" width="100px" />
+    <div className={`navbar ${stickyClass}`}>
+      <div className="logo">
+        STAR BAKERY
+        {/* <img src="./logo.png" alt="Logo" height="100px" width="100px" /> */}
       </div>
+      <nav className="navigation">{/* your navigation */}</nav>
     </div>
   )
 }
