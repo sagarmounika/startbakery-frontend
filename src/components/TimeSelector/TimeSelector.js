@@ -1,11 +1,12 @@
-// TimeSelector.js
 import React from "react"
-import {useDispatch, useSelector} from "react-redux"
+import {useDispatch} from "react-redux"
 import Select, {components} from "react-select"
 import {setSelectedTimeRange, clearDates} from "../../Reducers/dashboardSlice"
 import {FaRegCalendar} from "react-icons/fa6"
 import {customStyles} from "../../features/dashboard/selectUtils"
 import style from "./selector.module.scss"
+
+// calendar icon for select
 const Control = ({children, ...props}) => {
   const style = {
     cursor: "pointer",
@@ -26,11 +27,11 @@ const Control = ({children, ...props}) => {
 
 const TimeSelector = () => {
   const dispatch = useDispatch()
-  const {selectedTimeRange} = useSelector(state => state.dashboardReducer)
 
-  const handleTimeRangeChange = selectedOption => {
-    
+  // when time range changes
+  const handleTimeRangeChange = selectedOption => {    
     dispatch(setSelectedTimeRange(selectedOption.value))
+    // clearing startdate and enddate to be calculated again. which is used in daterangefilter
     dispatch(clearDates())
   }
 
@@ -43,7 +44,6 @@ const TimeSelector = () => {
 
   return (
     <div className={style.selectorContainer}>
-      {/* <label>Select Time Range:</label> */}
       <div className={style.selectorWrap}>
         <Select
           options={options}

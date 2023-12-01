@@ -8,10 +8,7 @@ import {
 import CanvasJSReact from "@canvasjs/react-charts"
 import {groupOrders} from "../../features/dashboard/chartUtils"
 import style from "./chartWrapper.module.scss"
-import RGL, {WidthProvider} from "react-grid-layout"
-import "react-grid-layout/css/styles.css"
-import "react-resizable/css/styles.css"
-const ReactGridLayout = WidthProvider(RGL)
+
 const CanvasJSChart = CanvasJSReact.CanvasJSChart
 const CanvasJS = CanvasJSReact.CanvasJS
 CanvasJS.addColorSet("customColorSet1", [
@@ -24,34 +21,34 @@ CanvasJS.addColorSet("customColorSet1", [
 ])
 const ChartWrapper = ({scrollToTop}) => {
   const dispatch = useDispatch()
-  const {ordersData, timeFilteredData} = useSelector(
-    state => state.dashboardReducer
-  )
+  const {timeFilteredData} = useSelector(state => state.dashboardReducer)
 
+  // on click of any bar in type chart and scrolling to top
   const handleTypeSelect = e => {
     const type = e.dataPoint.label
     dispatch(setSelectedType(type))
     scrollToTop()
   }
-
+  // on click of any bar in state chart and scrolling to top
   const handleStateSelect = e => {
     const type = e.dataPoint.label
     dispatch(setSelectedState(type))
     scrollToTop()
   }
 
+  // on click of any bar in branch chart and scrolling to top
   const handleRegionSelect = e => {
     const type = e.dataPoint.label2
-
     dispatch(setSelectedRegion(Number(type)))
     scrollToTop()
   }
-
+  // grouping based on type
   const typeChartData = groupOrders(
     timeFilteredData,
     "itemType",
     handleTypeSelect
   )
+
   const typeChartOptions = {
     animationEnabled: true,
     colorSet: "customColorSet1",
@@ -87,7 +84,7 @@ const ChartWrapper = ({scrollToTop}) => {
       },
     ],
   }
-
+  // grouping based on state
   const stateChartData = groupOrders(
     timeFilteredData,
     "orderState",
@@ -127,7 +124,7 @@ const ChartWrapper = ({scrollToTop}) => {
       },
     ],
   }
-
+  // grouping based on branch
   const topBranchesChartData = groupOrders(
     timeFilteredData,
     "branch",
@@ -177,21 +174,6 @@ const ChartWrapper = ({scrollToTop}) => {
       {charts.map((chart, index) => (
         <CanvasJSChart options={chart.options} key={index} />
       ))}
-      {/* <ReactGridLayout
-        className="nested-layout"
-        cols={3}
-        rowHeight={150}
-        width={800}
-      >
-        {charts.map((chart, index) => (
-          <div
-            key={`chartwrapper-${index}`}
-            data-grid={{x: index, y: 0, w: 1, h: 1}}
-          >
-            <CanvasJSChart options={chart.options} />
-          </div>
-        ))}
-      </ReactGridLayout> */}
     </div>
   )
 }

@@ -34,19 +34,19 @@ export const zoomHandler = (chart,e) => {
   )
     return
 
-  var xValue = Math.round(chart.axisX[0].convertPixelToValue(e.clientX))
-  var yValue = Math.round(chart.axisY[0].convertPixelToValue(e.clientY))
+  var xValue = Math.round(chart?.axisX[0]?.convertPixelToValue(e.clientX))
+  var yValue = Math.round(chart?.axisY[0]?.convertPixelToValue(e.clientY))
 
-  var axisXViewportMin = chart.axisX[0].get("viewportMinimum"),
-    axisXViewportMax = chart.axisX[0].get("viewportMaximum"),
-    axisYViewportMin = chart.axisY[0].get("viewportMinimum"),
-    axisYViewportMax = chart.axisY[0].get("viewportMaximum"),
-    axisXMin = chart.axisX[0].get("minimum"),
-    axisXMax = chart.axisX[0].get("maximum"),
-    axisYMin = chart.axisY[0].get("minimum"),
-    axisYMax = chart.axisY[0].get("maximum"),
-    axisXInterval = chart.axisX[0].interval,
-    axisYInterval = chart.axisY[0].interval
+  var axisXViewportMin = chart?.axisX[0]?.get("viewportMinimum"),
+    axisXViewportMax = chart?.axisX[0]?.get("viewportMaximum"),
+    axisYViewportMin = chart?.axisY[0]?.get("viewportMinimum"),
+    axisYViewportMax = chart?.axisY[0]?.get("viewportMaximum"),
+    axisXMin = chart?.axisX[0]?.get("minimum"),
+    axisXMax = chart?.axisX[0]?.get("maximum"),
+    axisYMin = chart?.axisY[0]?.get("minimum"),
+    axisYMax = chart?.axisY[0]?.get("maximum"),
+    axisXInterval = chart?.axisX[0]?.interval,
+    axisYInterval = chart?.axisY[0]?.interval
 
   var newAxisXViewportMin,
     newAxisXViewportMax,
@@ -91,10 +91,10 @@ export const zoomHandler = (chart,e) => {
     newAxisYViewportMax <= axisYMax &&
     newAxisYViewportMax - newAxisYViewportMin > 2 * axisYInterval
   ) {
-    chart.axisX[0].set("viewportMinimum", newAxisXViewportMin, false)
-    chart.axisX[0].set("viewportMaximum", newAxisXViewportMax, false)
+    chart?.axisX[0]?.set("viewportMinimum", newAxisXViewportMin, false)
+    chart?.axisX[0].set("viewportMaximum", newAxisXViewportMax, false)
 
-    chart.axisY[0].set("viewportMinimum", newAxisYViewportMin, false)
-    chart.axisY[0].set("viewportMaximum", newAxisYViewportMax)
+    chart?.axisY[0]?.set("viewportMinimum", newAxisYViewportMin, false)
+    chart?.axisY[0]?.set("viewportMaximum", newAxisYViewportMax)
   }
 }

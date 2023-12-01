@@ -5,4 +5,8 @@ export const store = configureStore({
   reducer: {
     dashboardReducer: dashboardReducer,
   },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 })

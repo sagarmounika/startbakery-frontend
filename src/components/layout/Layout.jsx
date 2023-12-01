@@ -6,7 +6,7 @@ export default function Layout() {
   return (
     <>
       <Navbar />
-      <div width="100%" height="100%" mt="5">
+      <div width="100%" height="100%" style={{width: "100%", height: "100%"}}>
         <Outlet />
       </div>
     </>

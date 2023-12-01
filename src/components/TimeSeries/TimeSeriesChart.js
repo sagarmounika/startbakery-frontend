@@ -1,11 +1,11 @@
-// TimeSeriesChart.js
-import React, {useState, useRef, useEffect, useCallback} from "react"
+import React, {useState, useRef, useCallback} from "react"
 import CanvasJSReact from "@canvasjs/react-charts"
-import {useDispatch, useSelector} from "react-redux"
+import {useSelector} from "react-redux"
 import {customStyles} from "../../features/dashboard/selectUtils"
 import {zoomHandler} from "../../features/dashboard/chartUtils"
 import style from "./timeSeries.module.scss"
 import Select from "react-select"
+
 const CanvasJSChart = CanvasJSReact.CanvasJSChart
 const options = [
   {value: "all", label: "Show All"},
@@ -20,6 +20,8 @@ const TimeSeriesChart = () => {
     state => state.dashboardReducer.groupData
   )
   const [type, setType] = useState(options[0])
+
+  // data based on type
   const canvasJSData =
     type.value === "all"
       ? [
@@ -64,15 +66,14 @@ const TimeSeriesChart = () => {
 
   const canvasJSOptions = {
     zoomEnabled: true,
-
     // exportEnabled: true,
     animationEnabled: true,
     animationDuration: 2000,
     toolTip: {
       fontColor: "black",
     },
+    // when user zooms using mouse wheel and want to go back to original
     rangeChanged: function (e) {
-      
       if (e.trigger === "reset") {
         e.chart.options.axisX.viewportMinimum = null
         e.chart.options.axisX.viewportMaximum = null
@@ -104,27 +105,25 @@ const TimeSeriesChart = () => {
       gridColor: "#ebebeb",
       suffix: " Rs",
     },
-    // height: "500px",
     data: canvasJSData,
   }
-
+  // type select
   const onSelect = val => {
     setType(val)
   }
+
+  // when user zooms onmouse wheel
   const onWheel = useCallback(e => {
     e.preventDefault()
     const chart = chartRef.current
     const container = containerRef.current
-    const {x1, x2, y1, y2} = chart?.plotArea
-   
-
     container.scrollTo({bottom: container.scrollHeight, behavior: "smooth"})
     zoomHandler(chart, e)
-    //  container.scrollTop += e.deltaY
   }, [])
+
+  // to get parent div using ref and attaching onwheel with passive false.
   const divRefCallback = useCallback(
     node => {
-   
       if (node == null) {
         return
       }
@@ -151,17 +150,13 @@ const TimeSeriesChart = () => {
           />
         </div>
       </div>
-      {/* <div onWheel={e => wheelHandler(e)}> */}
       <div className={style.chartContainer} ref={divRefCallback}>
         <CanvasJSChart
           options={canvasJSOptions}
           onRef={ref => (chartRef.current = ref)}
           id="chart"
-          // ref={containerRef}
         />
       </div>
-
-      {/* </div> */}
     </div>
   )
 }

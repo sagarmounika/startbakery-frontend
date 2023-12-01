@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useLayoutEffect, forwardRef} from "react"
+import React, {useRef, useEffect} from "react"
 import TimeSelector from "../TimeSelector/TimeSelector"
 import DateRangeSelector from "../DateRangeSelector/DateRangeSelector"
 import ChartWrapper from "../ChartWrapper/ChartWrapper"
@@ -11,13 +11,9 @@ import {useDispatch, useSelector} from "react-redux"
 import {RxReset} from "react-icons/rx"
 import style from "./dashboard.module.scss"
 
-import RGL, {WidthProvider} from "react-grid-layout"
-import "react-grid-layout/css/styles.css"
-import "react-resizable/css/styles.css"
-
-const ReactGridLayout = WidthProvider(RGL)
 const Dashboard = () => {
   const dispatch = useDispatch()
+
   const {
     ordersData,
     selectedType,
@@ -30,18 +26,24 @@ const Dashboard = () => {
     endDate,
     loading,
   } = useSelector(state => state.dashboardReducer)
+
   const scrollRef = useRef(null)
   const {groupedData} = useSelector(state => state.dashboardReducer.groupData)
+
+  // getting order data on mount
   useEffect(() => {
     dispatch(getOrdersData({onSuccess: () => {}, onFailure: () => {}}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  //doing common filters on orderdata for both timseries and charts based on selectedtimerange, daterange
   useEffect(() => {
     let filteredByTime = ordersData.filter(order =>
       moment(order.lastUpdateTime).isAfter(
         moment().subtract(1, selectedTimeRange).startOf(selectedTimeRange)
       )
     )
-   
+
     if (startDate && endDate) {
       filteredByTime = filteredByTime.filter(order =>
         moment(order.lastUpdateTime).isBetween(startDate, endDate, null, "[]")
@@ -49,10 +51,11 @@ const Dashboard = () => {
     }
 
     dispatch(setTimeFilteredData(filteredByTime))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTimeRange, ordersData, startDate, endDate])
 
+  // grouping filtered data for timeseries chart for each day or hour.
   useEffect(() => {
-   
     if (timeFilteredData.length > 0) {
       const {groupedData, groupedTotalValueData} = groupOrdersByTimeGranularity(
         timeFilteredData,
@@ -62,15 +65,17 @@ const Dashboard = () => {
         selectedRegion
       )
       dispatch(setGroupData({groupedData, groupedTotalValueData}))
-     
     } else {
       dispatch(setGroupData({groupedData: [], groupedTotalValueData: []}))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeFilteredData, selectedType, selectedState, selectedRegion])
 
+  // to clear type,range,branch filter
   const clearHandler = () => {
     dispatch(clearAll())
   }
+  // to scroll when user clicks on any bar chart value
   const scrollToTop = () => {
     scrollRef.current?.scrollIntoView({behavior: "smooth"})
   }
@@ -103,20 +108,6 @@ const Dashboard = () => {
           {groupedData.length ? (
             <>
               <DateRangeSelector ref={scrollRef} />
-              {/* <ReactGridLayout
-                className={style.layout}
-                cols={3}
-                rowHeight={timeSeriesHeight}
-              >
-                <div key="timeseries" data-grid={{x: 0, y: 0, w: 3, h: 1}}>
-                  <TimeSeriesChart />
-                </div>
-
-                <ChartWrapper
-                  key="chartwrapper"
-                  data-grid={{x: 0, y: 1, w: 3, h: 1}}
-                />
-              </ReactGridLayout> */}
               <TimeSeriesChart />
               <ChartWrapper scrollToTop={scrollToTop} />
             </>
@@ -125,12 +116,6 @@ const Dashboard = () => {
           )}
         </>
       )}
-      {/* <Dummy /> */}
-      {/* <div className={style.chartContainer}>
-
-      <TimeSeriesChart />
-      <ChartWrapper />
-      </div> */}
     </div>
   )
 }
