@@ -4,6 +4,8 @@
     align-items: stretch;
     margin-bottom: 1%;
     justify-content: flex-end;
+    font-size: .9em;
+  
 }
 
 .filterBtn {
@@ -16,8 +18,9 @@
     align-items: center;
     justify-content: space-between;
     white-space: nowrap;
-    width: 8%;
-    div{
+    // width: 8%;
+
+    div {
         margin-right: 2%;
     }
 }

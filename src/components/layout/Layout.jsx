@@ -1,13 +1,17 @@
 import React from "react"
-import {Outlet} from "react-router-dom"
-import Navbar from "../Navbar/Navbar"
-
+import {useSelector} from "react-redux"
+import style from "./layout.module.scss"
+import Dashboard from "../Dashboard/Dashboard"
+import Sidebar from "../Sidebar/Sidebar"
+import Table from "../Table/Table"
 export default function Layout() {
+  const {sidebarOption} = useSelector(state => state.sidebarReducer)
   return (
     <>
-      <Navbar />
-      <div width="100%" height="100%" mt="5">
-        <Outlet />
+      {/* <Navbar /> */}
+      <div className={style.layoutContainer}>
+        <Sidebar />
+        {sidebarOption === "dashboard" ? <Dashboard /> : <Table />}
       </div>
     </>
   )

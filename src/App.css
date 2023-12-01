@@ -7,6 +7,9 @@
 .react-datetimerange-picker__wrapper {
     border: 1px solid rgb(210, 210, 210) !important;
     border-radius: 5px;
+    font-size: .9em;
+    font-weight: 500;
+    /* font-family: sans-serif !important; */
 }
 
 .layout,
@@ -21,4 +24,9 @@
 
 html {
     scroll-behavior: smooth;
+}
+
+input {
+    /* font-family: 'Lato', sans-serif !important; */
+    /* font-family: 'Montserrat', sans-serif !important; */
 }

@@ -41,7 +41,7 @@ const Dashboard = () => {
         moment().subtract(1, selectedTimeRange).startOf(selectedTimeRange)
       )
     )
-   
+
     if (startDate && endDate) {
       filteredByTime = filteredByTime.filter(order =>
         moment(order.lastUpdateTime).isBetween(startDate, endDate, null, "[]")
@@ -52,7 +52,6 @@ const Dashboard = () => {
   }, [selectedTimeRange, ordersData, startDate, endDate])
 
   useEffect(() => {
-   
     if (timeFilteredData.length > 0) {
       const {groupedData, groupedTotalValueData} = groupOrdersByTimeGranularity(
         timeFilteredData,
@@ -62,7 +61,6 @@ const Dashboard = () => {
         selectedRegion
       )
       dispatch(setGroupData({groupedData, groupedTotalValueData}))
-     
     } else {
       dispatch(setGroupData({groupedData: [], groupedTotalValueData: []}))
     }
