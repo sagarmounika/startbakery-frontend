@@ -1,3 +1,5 @@
+@import '../../media.scss';
+
 .timeChartContainer {
 
     width: 100%;
@@ -28,6 +30,10 @@
     justify-content: space-between;
     border-bottom: 1px solid #e6e9ed;
 
+    @media #{$mobile} {
+        font-size: .8em;
+    }
+
     .title {
         align-self: center;
     }
@@ -36,5 +42,15 @@
         margin-left: auto;
         font-size: .8em;
         width: 15%;
+
+
+        @media #{$tablet},
+        #{$laptop} {
+            width: fit-content;
+        }
+
+        @media #{$mobile} {
+            width: 40%;
+        }
     }
 }

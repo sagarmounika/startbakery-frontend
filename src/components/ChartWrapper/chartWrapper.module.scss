@@ -1,12 +1,26 @@
+@import '../../media.scss';
+
 .chartWrapper {
-//     display: grid;
-//     grid-template-columns: repeat(3, 1fr);
-//     gap: 20px;
-//     cursor: pointer;
-//     width: 100%;
-height: auto;
+    //     display: grid;
+    //     grid-template-columns: repeat(3, 1fr);
+    //     gap: 20px;
+    //     cursor: pointer;
+    //     width: 100%;
+    height: auto;
     display: flex;
-    align-items: stretch;}
+    align-items: stretch;
+
+    @media #{$mobile} {
+        flex-direction: column;
+        gap: 10px;
+
+        .canvasjs-chart-container {
+            width: 100% !important;
+
+        }
+    }
+}
+
 // }
 
 .timeChartContainer {

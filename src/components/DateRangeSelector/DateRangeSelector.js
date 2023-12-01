@@ -55,6 +55,7 @@ const DateRangeSelector = forwardRef((props, ref) => {
         value={value}
         minDate={minDate}
         maxDate={maxDate}
+        className={style.rangePicker}
       />
       <button onClick={applyFilter} className={style.filterBtn}>
         <div>Apply Filter</div>

@@ -1,9 +1,26 @@
+@import '../../media.scss';
+
 .rangeWrapper {
     display: flex;
     width: 100%;
     align-items: stretch;
     margin-bottom: 1%;
     justify-content: flex-end;
+
+    @media #{$mobile} {
+        flex-direction: column;
+
+
+        .rangePicker {
+            // width: 100% !important;
+            // margin-right: 2%;
+            // font-size: .8em;
+            // margin-left: auto;
+
+            .react-datetimerange-picker__wrapper {}
+        }
+    }
+
 }
 
 .filterBtn {
@@ -17,7 +34,20 @@
     justify-content: space-between;
     white-space: nowrap;
     width: 8%;
-    div{
+
+    div {
         margin-right: 2%;
+    }
+
+    @media #{$tablet},
+    #{$laptop} {
+        width: fit-content;
+    }
+
+    @media #{$mobile} {
+        width: 50%;
+        margin-left: auto;
+        padding: 2%;
+        margin-top: 2%;
     }
 }

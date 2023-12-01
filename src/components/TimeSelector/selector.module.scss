@@ -1,3 +1,5 @@
+@import '../../media.scss';
+
 .selectorContainer {
     display: flex;
     align-items: center;
@@ -5,9 +7,14 @@
     width: 80%;
     justify-content: flex-end;
 }
-.selectorWrap{
+
+.selectorWrap {
     font-size: .9em;
     // width: fit-content;
     width: 15%;
     cursor: pointer;
+
+    @media #{$mobile} {
+        width: 100%;
+    }
 }
